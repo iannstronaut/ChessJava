@@ -3,5 +3,8 @@
 - Raja (King)
 - Kuda (Knight)
 - Benteng (Rook)
+- Ratu (Queen)
+- Mentri (Bishop)
+- Bidak (Pawn)
   
 *Under Construction*
