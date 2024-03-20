@@ -13,6 +13,7 @@ public class Piece {
     public int col, row, preCol, preRow;
     public int color;
     public Piece hittingP;
+    public boolean moved;
     
     public Piece(int color, int col, int row){
         this.color = color;
@@ -65,6 +66,7 @@ public class Piece {
         y = getY(row);
         preCol = getCol(x);
         preRow = getRow(y);
+        moved = true;
     }
     public void resetPosition(){
         col = preCol;
@@ -152,6 +154,55 @@ public class Piece {
                 if(piece.col == targetCol && piece.row == r){
                     hittingP = piece;
                     return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    public boolean pieceIsOnDiagonalLine(int targetCol, int targetRow){
+        if(targetRow < preRow){
+            //Up Left
+            for(int c = preCol-1; c > targetCol; c--){
+                int diff = Math.abs(c - preCol);
+                for (Piece piece : GamePanel.simPieces) {
+                    if (piece.col == c && piece.row == preRow - diff) {
+                        hittingP = piece;
+                        return true;
+                    }
+                }
+            }
+            //Up right
+            for(int c = preCol+1; c < targetCol; c++){
+                int diff = Math.abs(c - preCol);
+                for (Piece piece : GamePanel.simPieces) {
+                    if (piece.col == c && piece.row == preRow - diff) {
+                        hittingP = piece;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if(targetRow > preRow){
+            //Down left
+            for(int c = preCol-1; c > targetCol; c--){
+                int diff = Math.abs(c - preCol);
+                for (Piece piece : GamePanel.simPieces) {
+                    if (piece.col == c && piece.row == preRow + diff) {
+                        hittingP = piece;
+                        return true;
+                    }
+                }
+            }
+            //Down right
+            for(int c = preCol+1; c < targetCol; c++){
+                int diff = Math.abs(c - preCol);
+                for (Piece piece : GamePanel.simPieces) {
+                    if (piece.col == c && piece.row == preRow + diff) {
+                        hittingP = piece;
+                        return true;
+                    }
                 }
             }
         }
