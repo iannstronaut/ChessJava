@@ -1,9 +1,6 @@
 package chess;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import piece.Bishop;
@@ -21,10 +18,12 @@ public class GamePanel extends JPanel implements Runnable{
     final int FPS = 60;
     Thread gameThread;
     Board board = new Board();
+    Mouse mouse = new Mouse();
     
     //Pieces
     public static ArrayList<Piece> pieces = new ArrayList<>();
     public static ArrayList<Piece> simPieces = new ArrayList<>();
+    Piece activeP;
     
     //Color Side
     public static final int WHITE = 0;
@@ -34,6 +33,8 @@ public class GamePanel extends JPanel implements Runnable{
     public GamePanel(){
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.black);
+        addMouseMotionListener(mouse);
+        addMouseListener(mouse);
         
         setPieces();
         copyPiece(pieces, simPieces);
@@ -133,7 +134,38 @@ public class GamePanel extends JPanel implements Runnable{
         }
     }
     private void update(){
-        
+        // Mouse Button pressed
+        if(mouse.pressed){
+           if(activeP == null){
+               //If the activeP is Null, check if you can pick up a piece
+               for (Piece piece : simPieces){
+                    //If the mouse is on an ally piece, Pick it up as the activeP
+                   if (piece.color == currentColor &&
+                        piece.col == mouse.x/Board.SQUARE_SIZE &&
+                        piece.row == mouse.y/Board.SQUARE_SIZE){
+                        activeP = piece;
+                   }
+               }
+           }else{
+               //If Player is holding a piece
+               simulate();
+           }
+        }
+
+        if (mouse.pressed == false){
+            if (activeP != null){
+                activeP.updatePosition();
+                activeP = null;
+            }
+        }
+    }
+
+    public void simulate(){
+        //if a piece is being held
+        activeP.x = mouse.x - Board.HALF_SQUARE_SIZE;
+        activeP.y = mouse.y - Board.HALF_SQUARE_SIZE;
+        activeP.col = activeP.getCol(activeP.x);
+        activeP.row = activeP.getRow(activeP.y);
     }
     
     public void paintComponent(Graphics g){
@@ -147,6 +179,16 @@ public class GamePanel extends JPanel implements Runnable{
         //Pieces
         for (Piece p : simPieces) {
             p.draw(g2);
+        }
+
+        if(activeP != null) {
+            g2.setColor(Color.white);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
+            g2.fillRect(activeP.col * Board.SQUARE_SIZE, activeP.row * Board.SQUARE_SIZE, Board.SQUARE_SIZE, Board.SQUARE_SIZE);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
+            //Draw the activeP in the end
+            activeP.draw(g2);
         }
     }
 
