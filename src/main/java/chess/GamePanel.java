@@ -164,7 +164,10 @@ public class GamePanel extends JPanel implements Runnable{
                     //Update the piece list in case a place hasbeen capture
                     copyPiece(simPieces, pieces);
                     activeP.updatePosition();
+
+                    changePlayer();
                 }else {
+                    copyPiece(pieces, simPieces);
                     activeP.resetPosition();
                     activeP = null;
                 }
@@ -194,7 +197,14 @@ public class GamePanel extends JPanel implements Runnable{
             validSquare = true;
         }
     }
-    
+    private void changePlayer(){
+        if(currentColor == WHITE){
+            currentColor = BLACK;
+        }else {
+            currentColor = WHITE;
+        }
+        activeP = null;
+    }
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         
@@ -218,6 +228,17 @@ public class GamePanel extends JPanel implements Runnable{
 
             //Draw the activeP in the end
             activeP.draw(g2);
+        }
+
+        //Status Messages
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2.setFont(new Font("Poppins", Font.PLAIN, 40));
+        g2.setColor(Color.WHITE);
+
+        if(currentColor == WHITE){
+            g2.drawString("White's Turn", 840, 550);
+        }else {
+            g2.drawString("Black's Turn", 840, 250);
         }
     }
 
