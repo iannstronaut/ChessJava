@@ -1,2 +1,2 @@
-#Chess Game With Java
-Under Construction
+# Chess Game With Java
+*Under Construction*
